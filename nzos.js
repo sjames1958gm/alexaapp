@@ -5,7 +5,7 @@
 
 'use strict';
 
-const { command } = require('./managerIf');
+const { command, checkConnection } = require('./managerIf');
 
 const nzos_app_id = "amzn1.ask.skill.d59e4dcf-92b7-4c4f-9ecc-ec93623a4d17";
 const appName = "nzos";
@@ -26,6 +26,7 @@ const nzos_strings = {
 
 const nzos_handlers = {
     'Launch': function () {
+        if (!checkConnection(this)) return;
         // console.log(this.event);
         const {request, session, context} = this.event;
         const name = request.intent.name;
@@ -45,7 +46,42 @@ const nzos_handlers = {
                 app, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':tell', `Launching ${app} on ${device}`);
+                            this.emit(':ask', `Launching ${app} on ${device}`);
+                        break;
+                        case 1:
+                            this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                        break;
+                        default:
+                            this.emit(':tell', 'Failed to launch app');
+                    }
+                
+                }.bind(this)); 
+        }
+    },
+    'Move': function () {
+        if (!checkConnection(this)) return;
+        // console.log(this.event);
+        const {request, session, context} = this.event;
+        const name = request.intent.name;
+        const app = request.intent.slots.App.value;
+        let device = request.intent.slots.Device.value;
+        if (!app) {
+            let slotToElicit = 'App';
+            let speechOutput = 'Which app would you like to move?';
+            let repromptSpeech = speechOutput;
+            this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
+        }
+        else if (!device) {
+            let slotToElicit = 'Device';
+            let speechOutput = 'Move the app to which device?';
+            let repromptSpeech = speechOutput;
+            this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
+        } else {
+            command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+                app, device, function(status, sessionId, response, parm) {
+                    switch (status) {
+                        case 0:
+                            this.emit(':ask', `Moving ${app} to ${device}`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -58,6 +94,8 @@ const nzos_handlers = {
         }
     },
     'Identify': function() {
+        if (!checkConnection(this)) return;
+        // console.log(this.event);
         const {request, session, context} = this.event;
         const name = request.intent.name;
         const user = request.intent.slots.User.value;

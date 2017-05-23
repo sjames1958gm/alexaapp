@@ -5,7 +5,7 @@
 
 'use strict';
 
-const { command } = require('./managerIf');
+const { command, checkConnection } = require('./managerIf');
 
 const presentation_app_id = "amzn1.ask.skill.bcaf523d-4c04-450f-9f6b-20c40c5ec1d8";
 const appName = "pdf";
@@ -26,7 +26,7 @@ const presentation_strings = {
 
 const presentation_handlers = {
     'Show': function () {
-        // console.log(this.event);
+        if (!checkConnection(this)) return;
         const {request, session, context} = this.event;
         const name = request.intent.name;
         const document = request.intent.slots.Document.value;
@@ -41,7 +41,7 @@ const presentation_handlers = {
             if (!device) {
                 device = "default device";
             }
-            command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 document, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
@@ -58,6 +58,7 @@ const presentation_handlers = {
         }
     },
     'Move': function () {
+        if (!checkConnection(this)) return;
         // console.log(this.event);
         const {request, session, context} = this.event;
         const name = request.intent.name;
@@ -69,9 +70,8 @@ const presentation_handlers = {
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
         else {
-            command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 device, function(status, sessionId, response, parm) {
-                    console.log(`here ${status} ${sessionId} ${response} ${parm}`);
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Moving document to ${device}`);
@@ -84,6 +84,7 @@ const presentation_handlers = {
         }
     },
     'Page': function () {
+        if (!checkConnection(this)) return;
         // console.log(this.event);
         const {request, session, context} = this.event;
         const name = request.intent.name;
@@ -95,9 +96,8 @@ const presentation_handlers = {
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
         else {
-            command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 direction, function(status, sessionId, response, parm) {
-                    console.log(`here ${status} ${sessionId} ${response} ${parm}`);
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Paging ${direction}`);
@@ -110,6 +110,7 @@ const presentation_handlers = {
         }
     },
     'Scroll': function () {
+        if (!checkConnection(this)) return;
         // console.log(this.event);
         const {request, session, context} = this.event;
         const name = request.intent.name;
@@ -121,9 +122,8 @@ const presentation_handlers = {
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
         else {
-            command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 direction, function(status, sessionId, response, parm) {
-                    console.log(`here ${status} ${sessionId} ${response} ${parm}`);
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Scrolling ${direction}`);
@@ -136,11 +136,11 @@ const presentation_handlers = {
         }
     },
     'Identify': function() {
+        if (!checkConnection(this)) return;
         const {request, session, context} = this.event;
         const name = request.intent.name;
         const user = request.intent.slots.User.value;
-        console.log(`User: ${user}, ${name}`);
-        command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 user.toLowerCase(), function(status, sessionId, response, parm) {
                     switch(status) {
                         case 0:

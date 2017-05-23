@@ -89,7 +89,7 @@
         socket.on("close", function () {
           console.log("Disconnected");
           socket = undefined;
-          setTimeout(function () { connect(cb) }, 1000);
+          setTimeout(function () { connect(cb) }, 3000);
           connected = false;
           if (cb.onClose) 
             socket = cb.onClose();

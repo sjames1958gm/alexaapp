@@ -5,7 +5,7 @@
 
 'use strict';
 
-const { command } = require('./managerIf');
+const { command, checkConnection } = require('./managerIf');
 
 const telegram_app_id = "amzn1.ask.skill.3b6b0006-cc5a-4332-bce4-b606481e576a";
 const appName = "nzos";
@@ -26,12 +26,13 @@ const telegram_strings = {
 
 const telegram_handlers = {
     'test': function () {
+        if (!checkConnection(this)) return;
         console.log(this.event);
         const {request, session, context} = this.event;
         const name = request.intent.name;
         // const app = request.intent.slots.App.value;
         // let device = request.intent.slots.Device.value;
-        command(session.user.userId, addName, session.sessionId, name.toLowerCase(), 
+        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
             function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
@@ -47,11 +48,12 @@ const telegram_handlers = {
             }.bind(this));
     },
     'Identify': function() {
+        if (!checkConnection(this)) return;
         const {request, session, context} = this.event;
         const name = request.intent.name;
         const user = request.intent.slots.User.value;
         console.log(`User: ${user}, ${name}`);
-        command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 user.toLowerCase(), function(status, sessionId, response, parm) {
                     switch(status) {
                         case 0:

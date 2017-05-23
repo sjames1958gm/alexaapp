@@ -2,7 +2,7 @@ var net = require('net');
 var nzappapi =  require('./nzappapi.js');
 
 var transactions = [];
-
+var connected = false;
 module.exports.startClient = function() {
   
   console.log(`starting client to ${process.env.MGR_IP}:${process.env.MGR_PORT}`);
@@ -13,9 +13,20 @@ module.exports.startClient = function() {
       AppCommandResp: AppCommandResp
     },
     {
-      
+      onOpen: () => (connected = true),
+      onClose: () => (connected = false),
+      onError: () => (connected = false)
     });
 
+};
+
+module.exports.checkConnection = function(emitter) {
+  console.log(`Connected: ${connected}`);
+  if (!connected) {
+    emitter.emit(":tell", "No connection to application manager");
+    return false;
+  }  
+  return true;
 };
 
 module.exports.command = function(user, app, sessionId, intent, ...rest) {
