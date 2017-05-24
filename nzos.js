@@ -42,7 +42,7 @@ const nzos_handlers = {
             if (!device) {
                 device = "default device";
             }
-            command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 app, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
@@ -77,7 +77,7 @@ const nzos_handlers = {
             let repromptSpeech = speechOutput;
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         } else {
-            command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 app, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
@@ -100,7 +100,7 @@ const nzos_handlers = {
         const name = request.intent.name;
         const user = request.intent.slots.User.value;
         console.log(`User: ${user}, ${name}`);
-        command(context.System.user.userId, appName, session.sessionId, name.toLowerCase(), 
+        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 user.toLowerCase(), function(status, sessionId, response, parm) {
                     switch(status) {
                         case 0:
