@@ -8,12 +8,12 @@
 const { command, checkConnection } = require('./managerIf');
 
 const presentation_app_id = "amzn1.ask.skill.bcaf523d-4c04-450f-9f6b-20c40c5ec1d8";
-const appName = "pdf";
+const appName = "presentation";
 
 const en = {
         translation: {
             SKILL_NAME: 'Doc viewer',
-            HELP_MESSAGE: 'You can say open document or you can say exit ... What can I help you with?',
+            HELP_MESSAGE: 'You can say open document, page, scroll or you can say exit ... What can I help you with?',
             HELP_REPROMPT: 'What can I help you with?',
             STOP_MESSAGE: 'Goodbye!',
         },

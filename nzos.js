@@ -42,7 +42,7 @@ const nzos_handlers = {
             if (!device) {
                 device = "default device";
             }
-            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            command(session.user.userId, app, session.sessionId, name.toLowerCase(), 
                 app, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
