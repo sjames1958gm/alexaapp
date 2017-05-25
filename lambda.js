@@ -14,18 +14,21 @@ exports.handler = function (event, context) {
     switch (event.session.application.applicationId) {
         case presentation_app_id:
             console.log('' + new Date().toTimeString() + ': launch presentation skill');
+            console.log(event.request.type);
             alexa.appId = presentation_app_id;
             alexa.resources = presentation_strings;
             alexa.registerHandlers(presentation_handlers);
         break;
         case nzos_app_id:
             console.log('' + new Date().toTimeString() + ': launch nzos (cloud apps) skill');
+            console.log(event.request.type);
             alexa.appId = nzos_app_id;
             alexa.resources = nzos_strings;
             alexa.registerHandlers(nzos_handlers);
         break;
         case telegram_app_id:
             console.log('' + new Date().toTimeString() + ': launch telegram skill');
+            console.log(event.request.type);
             alexa.appId = telegram_app_id;
             alexa.resources = telegram_strings;
             alexa.registerHandlers(telegram_handlers);

@@ -26,12 +26,13 @@ const nzos_strings = {
 
 const nzos_handlers = {
     'Launch': function () {
+        console.log('Launch');
         if (!checkConnection(this)) return;
         // console.log(this.event);
-        const {request, session, context} = this.event;
+        const {request, session} = this.event;
         const name = request.intent.name;
         const app = request.intent.slots.App.value;
-        let device = request.intent.slots.Device.value;
+        let device = request.intent.slots.Device.value || "";
         if (!app) {
             var slotToElicit = 'App';
             var speechOutput = 'Which app would you like to start?';
@@ -39,14 +40,11 @@ const nzos_handlers = {
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
         else {
-            if (!device) {
-                device = "default device";
-            }
             command(session.user.userId, app, session.sessionId, name.toLowerCase(), 
                 app, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Launching ${app} on ${device}`);
+                            this.emit(':ask', `Launched ${app}`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -59,9 +57,10 @@ const nzos_handlers = {
         }
     },
     'Move': function () {
+        console.log('Launch');
         if (!checkConnection(this)) return;
         // console.log(this.event);
-        const {request, session, context} = this.event;
+        const {request, session} = this.event;
         const name = request.intent.name;
         const app = request.intent.slots.App.value;
         let device = request.intent.slots.Device.value;
@@ -94,9 +93,10 @@ const nzos_handlers = {
         }
     },
     'Identify': function() {
+        console.log('Launch');
         if (!checkConnection(this)) return;
         // console.log(this.event);
-        const {request, session, context} = this.event;
+        const {request, session} = this.event;
         const name = request.intent.name;
         const user = request.intent.slots.User.value;
         console.log(`User: ${user}, ${name}`);

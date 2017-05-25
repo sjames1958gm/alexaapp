@@ -25,27 +25,63 @@ const presentation_strings = {
 };
 
 const presentation_handlers = {
+    'LaunchRequest': function() {
+        console.log('LaunchRequest');
+        if (!checkConnection(this)) return;
+        const {request, session} = this.event;
+        command(session.user.userId, appName, session.sessionId, 'Launch'.toLowerCase(), 
+            function(status, sessionId, response, parm) {
+                switch (status) {
+                    case 0:
+                        this.emit(':ask', `Opened presentations.`);
+                    break;
+                    case 1:
+                        this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                    break;
+                    default:
+                        this.emit(':tell', 'Failed to open document');
+                }
+            
+            }.bind(this));        
+    },
+    'Launch': function() {
+        console.log('Launch');
+        if (!checkConnection(this)) return;
+        const {request, session} = this.event;
+        const name = request.intent.name;
+        const device = request.intent.slots.Device.value;
+        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            device, function(status, sessionId, response, parm) {
+                switch (status) {
+                    case 0:
+                        this.emit(':ask', `Opened presentations.`);
+                    break;
+                    case 1:
+                        this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                    break;
+                    default:
+                        this.emit(':tell', 'Failed to open document');
+                }
+            
+            }.bind(this));        
+    },
     'Show': function () {
         if (!checkConnection(this)) return;
-        const {request, session, context} = this.event;
+        const {request, session} = this.event;
         const name = request.intent.name;
         const document = request.intent.slots.Document.value;
-        let device = request.intent.slots.Device.value;
         if (!document) {
             var slotToElicit = 'Document';
-            var speechOutput = 'Which document would you like to open?';
+            var speechOutput = 'Which document would you like to show?';
             var repromptSpeech = speechOutput;
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
         else {
-            if (!device) {
-                device = "default device";
-            }
             command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                document, device, function(status, sessionId, response, parm) {
+                document, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Opening document ${document} on ${device}`);
+                            this.emit(':ask', `Opened document ${document}`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -60,7 +96,7 @@ const presentation_handlers = {
     'Move': function () {
         if (!checkConnection(this)) return;
         // console.log(this.event);
-        const {request, session, context} = this.event;
+        const {request, session} = this.event;
         const name = request.intent.name;
         const device = request.intent.slots.Device.value;
         if (!device) {
@@ -83,10 +119,10 @@ const presentation_handlers = {
                 }.bind(this));
         }
     },
-    'Page': function () {
+    'Go': function () {
         if (!checkConnection(this)) return;
         // console.log(this.event);
-        const {request, session, context} = this.event;
+        const {request, session} = this.event;
         const name = request.intent.name;
         const direction = request.intent.slots.Direction.value;
         if (!direction) {
@@ -100,7 +136,7 @@ const presentation_handlers = {
                 direction, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Paging ${direction}`);
+                            this.emit(':ask', `Action complete.`);
                         break;
                         default:
                             this.emit(':tell', 'Failed to complete request');
@@ -112,7 +148,7 @@ const presentation_handlers = {
     'Scroll': function () {
         if (!checkConnection(this)) return;
         // console.log(this.event);
-        const {request, session, context} = this.event;
+        const {request, session} = this.event;
         const name = request.intent.name;
         const direction = request.intent.slots.Direction.value;
         if (!direction) {
@@ -137,7 +173,7 @@ const presentation_handlers = {
     },
     'Identify': function() {
         if (!checkConnection(this)) return;
-        const {request, session, context} = this.event;
+        const {request, session} = this.event;
         const name = request.intent.name;
         const user = request.intent.slots.User.value;
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
