@@ -68,8 +68,9 @@ const telegram_handlers = {
         const {request, session} = this.event;
         const name = request.intent.name;
         const message = request.intent.slots.Message.value;
+        console.log(message);
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                message, function(status, sessionId, response, parm) {
+                message ? message : "", function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
                         this.emit(':ask', `Sent.`);
@@ -116,7 +117,7 @@ const telegram_handlers = {
         const user = request.intent.slots.User.value;
         console.log(`User: ${user}, ${name}`);
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                user.toLowerCase(), function(status, sessionId, response, parm) {
+                user ? user.toLowerCase() : "", function(status, sessionId, response, parm) {
                     switch(status) {
                         case 0:
                             this.emit(':ask', `User identity confirmed. Repeat your original request`);
@@ -129,6 +130,9 @@ const telegram_handlers = {
                     }
                 
                 }.bind(this));
+    },
+    'SessionEndedRequest': function() {
+        console.log("SessionEndedRequest");
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');

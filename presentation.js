@@ -66,6 +66,7 @@ const presentation_handlers = {
             }.bind(this));        
     },
     'Show': function () {
+        console.log('Show');
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
@@ -94,6 +95,7 @@ const presentation_handlers = {
         }
     },
     'Move': function () {
+        console.log('Move');
         if (!checkConnection(this)) return;
         // console.log(this.event);
         const {request, session} = this.event;
@@ -120,6 +122,7 @@ const presentation_handlers = {
         }
     },
     'Go': function () {
+        console.log('Go');
         if (!checkConnection(this)) return;
         // console.log(this.event);
         const {request, session} = this.event;
@@ -145,37 +148,21 @@ const presentation_handlers = {
                 }.bind(this));
         }
     },
-    'Scroll': function () {
-        if (!checkConnection(this)) return;
-        // console.log(this.event);
-        const {request, session} = this.event;
-        const name = request.intent.name;
-        const direction = request.intent.slots.Direction.value;
-        if (!direction) {
-            var slotToElicit = 'Direction';
-            var speechOutput = 'Which direction to scroll?';
-            var repromptSpeech = speechOutput;
-            this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
-        }
-        else {
-            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                direction, function(status, sessionId, response, parm) {
-                    switch (status) {
-                        case 0:
-                            this.emit(':ask', `Scrolling ${direction}`);
-                        break;
-                        default:
-                            this.emit(':tell', 'Failed to complete request');
-                    }
-                
-                }.bind(this));
-        }
-    },
     'Identify': function() {
+        console.log('Identify');
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
         const user = request.intent.slots.User.value;
+        console.log(`${user}`);
+        if (!user) {
+            var slotToElicit = 'User';
+            
+            var speechOutput = 'I don\'t recognize that.';
+            var repromptSpeech = speechOutput;
+            this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
+        }
+        else {
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 user.toLowerCase(), function(status, sessionId, response, parm) {
                     switch(status) {
@@ -190,6 +177,10 @@ const presentation_handlers = {
                     }
                 
                 }.bind(this));
+        }
+    },
+    'SessionEndedRequest': function() {
+        console.log("SessionEndedRequest");
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');

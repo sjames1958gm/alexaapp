@@ -28,7 +28,7 @@ exports.handler = function (event, context) {
         break;
         case telegram_app_id:
             console.log('' + new Date().toTimeString() + ': launch telegram skill');
-            console.log(event.request.type);
+            console.log(event);
             alexa.appId = telegram_app_id;
             alexa.resources = telegram_strings;
             alexa.registerHandlers(telegram_handlers);
