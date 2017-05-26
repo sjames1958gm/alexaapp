@@ -34,7 +34,7 @@ module.exports.command = function(user, app, sessionId, intent, ...rest) {
   if (rest.length > 0 && typeof rest[rest.length - 1] === "function") {
     cb = rest.pop();
   }
-  // console.log(`command: ${user}, ${app}, ${intent}`);
+
   nzappapi.AppCommandReq(user, app, sessionId, intent, 
     rest[0] || "", rest[1] || "", rest[2] || "", rest[3] || "", rest[4] || "");
     
@@ -43,17 +43,16 @@ module.exports.command = function(user, app, sessionId, intent, ...rest) {
       sessionId,
       timer: setInterval(() => cb(-1), 2000),
       f: cb
-    }
+    };
     transactions.push(t);
   }
 };
 
 var AppCommandResp = function(status, sessionId, response, parm) {
-  // console.log(`AppCommandResp`);
+  console.log(`AppCommandResp: (${status}, ${sessionId}, ${response}, ${parm})`);
   for (var i = 0; i < transactions.length; i++) {
     let t = transactions[i];
     if (t.sessionId === sessionId) {
-      // console.log("found session");
        clearInterval(t.timer);
        transactions.splice(i, 1);
        t.f(status, sessionId, response, parm);

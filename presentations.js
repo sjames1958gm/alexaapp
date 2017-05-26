@@ -8,7 +8,7 @@
 const { command, checkConnection } = require('./managerIf');
 
 const presentations_app_id = "amzn1.ask.skill.bcaf523d-4c04-450f-9f6b-20c40c5ec1d8";
-const appName = "presentation";
+const appName = "presentations";
 
 const en = {
         translation: {
@@ -111,10 +111,10 @@ const presentations_handlers = {
         }
         else {
             command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                device, function(status, sessionId, response, parm) {
+                "", device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Moving document to ${device}`);
+                            this.emit(':ask', `Moving to ${device}`);
                         break;
                         default:
                             this.emit(':tell', 'Failed to move document');
@@ -140,7 +140,7 @@ const presentations_handlers = {
                 direction, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Action complete.`);
+                            this.emit(':ask', `ok.`);
                         break;
                         default:
                             this.emit(':tell', 'Failed to complete request');
@@ -148,6 +148,26 @@ const presentations_handlers = {
                 
                 }.bind(this));
         }
+    },
+    'Close': function () {
+        if (!checkConnection(this)) return;
+        const {request, session} = this.event;
+        const name = request.intent.name;
+        const app = request.intent.slots.App.value;
+        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            appName, function(status, sessionId, response, parm) {
+                switch (status) {
+                    case 0:
+                        this.emit(':ask', `Closed`);
+                    break;
+                    case 1:
+                        this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                    break;
+                    default:
+                        this.emit(':tell', 'Failed to close app');
+                }
+            
+            }.bind(this)); 
     },
     'Identify': function() {
         if (!checkConnection(this)) return;

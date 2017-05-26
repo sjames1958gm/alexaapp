@@ -40,9 +40,11 @@ exports.handler = function (event, context) {
     if (request.type == 'IntentRequest') {
         let { intent } = request;
         let str = `\tIntent: ${intent.name} (`;
-        str += Object.keys(intent.slots).map((k) => (
-                    `${k}: ${intent.slots[k].value}`
-                )).join(", ");
+        if (intent.slots) {
+            str += Object.keys(intent.slots).map((k) => (
+                        `${k}: ${intent.slots[k].value}`
+                    )).join(", ");
+        }
         str += `)`;
         console.log(str);
     }

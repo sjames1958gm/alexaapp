@@ -85,7 +85,34 @@ const nzos_handlers = {
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
                         break;
                         default:
-                            this.emit(':tell', 'Failed to launch app');
+                            this.emit(':tell', 'Failed to move app');
+                    }
+                
+                }.bind(this)); 
+        }
+    },
+    'Close': function () {
+        if (!checkConnection(this)) return;
+        const {request, session} = this.event;
+        const name = request.intent.name;
+        const app = request.intent.slots.App.value;
+        if (!app) {
+            let slotToElicit = 'App';
+            let speechOutput = 'Which app would you like to close?';
+            let repromptSpeech = speechOutput;
+            this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
+        } else {
+            command(session.user.userId, app, session.sessionId, name.toLowerCase(), 
+                app, function(status, sessionId, response, parm) {
+                    switch (status) {
+                        case 0:
+                            this.emit(':ask', `Closed`);
+                        break;
+                        case 1:
+                            this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                        break;
+                        default:
+                            this.emit(':tell', 'Failed to close app');
                     }
                 
                 }.bind(this)); 

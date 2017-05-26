@@ -50,7 +50,7 @@ const telegram_handlers = {
         const user = request.intent.slots.User.value;
         if (!user) {
             var slotToElicit = 'User';
-            var speechOutput = 'Show which contact?';
+            var speechOutput = 'Select which contact?';
             var repromptSpeech = speechOutput;
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
@@ -59,7 +59,7 @@ const telegram_handlers = {
                     user, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `What is your message, for example say 'send message'.`);
+                            this.emit(':ask', `What is your message, for example say 'send' then your message.`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -78,6 +78,7 @@ const telegram_handlers = {
         const message = request.intent.slots.Message.value;
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 message ? message : "", function(status, sessionId, response, parm) {
+                
                 switch (status) {
                     case 0:
                         this.emit(':ask', `Sent.`);
@@ -107,7 +108,7 @@ const telegram_handlers = {
                 device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Moving document to ${device}`);
+                            this.emit(':ask', `Ok`);
                         break;
                         default:
                             this.emit(':tell', 'Failed to move document');
