@@ -26,9 +26,7 @@ const nzos_strings = {
 
 const nzos_handlers = {
     'Launch': function () {
-        console.log('Launch');
         if (!checkConnection(this)) return;
-        // console.log(this.event);
         const {request, session} = this.event;
         const name = request.intent.name;
         const app = request.intent.slots.App.value;
@@ -57,9 +55,7 @@ const nzos_handlers = {
         }
     },
     'Move': function () {
-        console.log('Launch');
         if (!checkConnection(this)) return;
-        // console.log(this.event);
         const {request, session} = this.event;
         const name = request.intent.name;
         const app = request.intent.slots.App.value;
@@ -93,13 +89,10 @@ const nzos_handlers = {
         }
     },
     'Identify': function() {
-        console.log('Launch');
         if (!checkConnection(this)) return;
-        // console.log(this.event);
         const {request, session} = this.event;
         const name = request.intent.name;
         const user = request.intent.slots.User.value;
-        console.log(`User: ${user}, ${name}`);
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 user.toLowerCase(), function(status, sessionId, response, parm) {
                     switch(status) {
@@ -116,7 +109,7 @@ const nzos_handlers = {
                 }.bind(this));
     },
     'SessionEndedRequest': function() {
-        console.log("SessionEndedRequest");
+        this.emit(':tell', this.t('STOP_MESSAGE'));
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');

@@ -33,8 +33,19 @@ exports.handler = function (event, context) {
         break;
     }
 
-    console.log(`${new Date().toTimeString()}: launch ${app} skill`);
-    console.log(`Request type: ${event.request.type}`);
+    const { request } = event;
+    // console.log(request);
+    console.log(`${new Date().toTimeString()}: skill ${app}`);
+    console.log(`\tRequest type: ${request.type}`);
+    if (request.type == 'IntentRequest') {
+        let { intent } = request;
+        let str = `\tIntent: ${intent.name} (`;
+        str += Object.keys(intent.slots).map((k) => (
+                    `${k}: ${intent.slots[k].value}`
+                )).join(", ");
+        str += `)`;
+        console.log(str);
+    }
 
     alexa.execute();
 };

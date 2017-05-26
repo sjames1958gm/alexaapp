@@ -26,7 +26,6 @@ const presentations_strings = {
 
 const presentations_handlers = {
     'LaunchRequest': function() {
-        console.log('LaunchRequest');
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         command(session.user.userId, appName, session.sessionId, 'Launch'.toLowerCase(), 
@@ -45,7 +44,6 @@ const presentations_handlers = {
             }.bind(this));        
     },
     'Launch': function() {
-        console.log('Launch');
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
@@ -66,7 +64,6 @@ const presentations_handlers = {
             }.bind(this));        
     },
     'Show': function () {
-        console.log('Show');
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
@@ -100,7 +97,6 @@ const presentations_handlers = {
         }
     },
     'Move': function () {
-        console.log('Move');
         if (!checkConnection(this)) return;
         // console.log(this.event);
         const {request, session} = this.event;
@@ -127,7 +123,6 @@ const presentations_handlers = {
         }
     },
     'Go': function () {
-        console.log('Go');
         if (!checkConnection(this)) return;
         // console.log(this.event);
         const {request, session} = this.event;
@@ -154,7 +149,6 @@ const presentations_handlers = {
         }
     },
     'Identify': function() {
-        console.log('Identify');
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
@@ -185,7 +179,6 @@ const presentations_handlers = {
         }
     },
     'SessionEndedRequest': function() {
-        console.log("SessionEndedRequest");
         this.emit(':tell', this.t('STOP_MESSAGE'));
     },
     'AMAZON.HelpIntent': function () {

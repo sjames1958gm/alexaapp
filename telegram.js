@@ -76,7 +76,6 @@ const telegram_handlers = {
         const {request, session} = this.event;
         const name = request.intent.name;
         const message = request.intent.slots.Message.value;
-        console.log(message);
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 message ? message : "", function(status, sessionId, response, parm) {
                 switch (status) {
@@ -94,7 +93,6 @@ const telegram_handlers = {
     },
     'Move': function () {
         if (!checkConnection(this)) return;
-        // console.log(this.event);
         const {request, session} = this.event;
         const name = request.intent.name;
         const device = request.intent.slots.Device.value;
@@ -123,7 +121,6 @@ const telegram_handlers = {
         const {request, session} = this.event;
         const name = request.intent.name;
         const user = request.intent.slots.User.value;
-        console.log(`User: ${user}, ${name}`);
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 user ? user.toLowerCase() : "", function(status, sessionId, response, parm) {
                     switch(status) {
@@ -140,7 +137,7 @@ const telegram_handlers = {
                 }.bind(this));
     },
     'SessionEndedRequest': function() {
-        console.log("SessionEndedRequest");
+        this.emit(':tell', this.t('STOP_MESSAGE'));
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');
