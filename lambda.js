@@ -34,7 +34,7 @@ exports.handler = function (event, context) {
     }
 
     const { request } = event;
-    // console.log(request);
+    console.log(request);
     console.log(`${new Date().toTimeString()}: skill ${app}`);
     console.log(`\tRequest type: ${request.type}`);
     if (request.type == 'IntentRequest') {

@@ -25,6 +25,9 @@ const nzos_strings = {
 };
 
 const nzos_handlers = {
+    'LaunchRequest': function() {
+        this.emit(':ask', 'Welcome to cloud OS, which APP would you like to launch, for example say "launch browser"?');
+    },
     'Launch': function () {
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
@@ -72,7 +75,7 @@ const nzos_handlers = {
             let repromptSpeech = speechOutput;
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         } else {
-            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            command(session.user.userId, app, session.sessionId, name.toLowerCase(), 
                 app, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:

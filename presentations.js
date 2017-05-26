@@ -69,6 +69,7 @@ const presentations_handlers = {
         const name = request.intent.name;
         let document = request.intent.slots.Document.value;
         const home = request.intent.slots.Home.value;
+        const device = request.intent.slots.Device.value || "";
         if (!document && !home) {
             var slotToElicit = 'Document';
             var speechOutput = 'Which document would you like to show?';
@@ -81,7 +82,7 @@ const presentations_handlers = {
                 document = "all";
             }
             command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                document, function(status, sessionId, response, parm) {
+                document, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Ok`);
