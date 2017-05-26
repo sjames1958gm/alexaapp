@@ -48,20 +48,28 @@ const telegram_handlers = {
         const {request, session} = this.event;
         const name = request.intent.name;
         const contact = request.intent.slots.Contact.value;
-        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                contact, function(status, sessionId, response, parm) {
-                switch (status) {
-                    case 0:
-                        this.emit(':ask', `What is your message.`);
-                    break;
-                    case 1:
-                        this.emit(':ask', `I don't recognize your identity, what is your username?`);
-                    break;
-                    default:
-                        this.emit(':tell', 'Failed to select contact');
-                }
-            
-            }.bind(this));        
+        if (!contact) {
+            var slotToElicit = 'Contact';
+            var speechOutput = 'Show which contact?';
+            var repromptSpeech = speechOutput;
+            this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
+        }
+        else {
+            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+                    contact, function(status, sessionId, response, parm) {
+                    switch (status) {
+                        case 0:
+                            this.emit(':ask', `What is your message.`);
+                        break;
+                        case 1:
+                            this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                        break;
+                        default:
+                            this.emit(':tell', 'Failed to select contact');
+                    }
+                
+                }.bind(this));        
+        }
     },
     'Send': function() {
         if (!checkConnection(this)) return;

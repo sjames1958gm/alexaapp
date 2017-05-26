@@ -7,7 +7,7 @@
 
 const { command, checkConnection } = require('./managerIf');
 
-const presentation_app_id = "amzn1.ask.skill.bcaf523d-4c04-450f-9f6b-20c40c5ec1d8";
+const presentations_app_id = "amzn1.ask.skill.bcaf523d-4c04-450f-9f6b-20c40c5ec1d8";
 const appName = "presentation";
 
 const en = {
@@ -19,12 +19,12 @@ const en = {
         },
     };
 
-const presentation_strings = {
+const presentations_strings = {
     'en': en,
     'en-US': en
 };
 
-const presentation_handlers = {
+const presentations_handlers = {
     'LaunchRequest': function() {
         console.log('LaunchRequest');
         if (!checkConnection(this)) return;
@@ -70,19 +70,24 @@ const presentation_handlers = {
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
-        const document = request.intent.slots.Document.value;
-        if (!document) {
+        let document = request.intent.slots.Document.value;
+        const home = request.intent.slots.Home.value;
+        if (!document && !home) {
             var slotToElicit = 'Document';
             var speechOutput = 'Which document would you like to show?';
             var repromptSpeech = speechOutput;
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
         else {
+            if (!document) {
+                // Assume home is set - and set document to all.
+                document = "all";
+            }
             command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
                 document, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Opened document ${document}`);
+                            this.emit(':ask', `Ok`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -181,6 +186,7 @@ const presentation_handlers = {
     },
     'SessionEndedRequest': function() {
         console.log("SessionEndedRequest");
+        this.emit(':tell', this.t('STOP_MESSAGE'));
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');
@@ -195,4 +201,4 @@ const presentation_handlers = {
     },
 };
 
-module.exports = {presentation_app_id, presentation_handlers, presentation_strings};
+module.exports = {presentations_app_id, presentations_handlers, presentations_strings};

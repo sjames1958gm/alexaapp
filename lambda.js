@@ -4,36 +4,37 @@
 const Alexa = require('alexa-sdk');
 var { connected } = require('./managerIf');
 
-var {presentation_handlers, presentation_app_id, presentation_strings} = require("./presentation");
+var {presentations_handlers, presentations_app_id, presentations_strings} = require("./presentations");
 var {nzos_handlers, nzos_app_id, nzos_strings} = require("./nzos");
 var {telegram_handlers, telegram_app_id, telegram_strings} = require("./telegram");
 
 exports.handler = function (event, context) {
     const alexa = Alexa.handler(event, context);
+    let app = "";
     
     switch (event.session.application.applicationId) {
-        case presentation_app_id:
-            console.log('' + new Date().toTimeString() + ': launch presentation skill');
-            console.log(event.request.type);
-            alexa.appId = presentation_app_id;
-            alexa.resources = presentation_strings;
-            alexa.registerHandlers(presentation_handlers);
+        case presentations_app_id:
+            app = "presentations";
+            alexa.appId = presentations_app_id;
+            alexa.resources = presentations_strings;
+            alexa.registerHandlers(presentations_handlers);
         break;
         case nzos_app_id:
-            console.log('' + new Date().toTimeString() + ': launch nzos (cloud apps) skill');
-            console.log(event.request.type);
+            app = "cloud OS";
             alexa.appId = nzos_app_id;
             alexa.resources = nzos_strings;
             alexa.registerHandlers(nzos_handlers);
         break;
         case telegram_app_id:
-            console.log('' + new Date().toTimeString() + ': launch telegram skill');
-            console.log(event);
+            app = "telegram";
             alexa.appId = telegram_app_id;
             alexa.resources = telegram_strings;
             alexa.registerHandlers(telegram_handlers);
         break;
     }
+
+    console.log(`${new Date().toTimeString()}: launch ${app} skill`);
+    console.log(`Request type: ${event.request.type}`);
 
     alexa.execute();
 };
