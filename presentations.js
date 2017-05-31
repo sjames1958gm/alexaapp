@@ -153,7 +153,6 @@ const presentations_handlers = {
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
-        const app = request.intent.slots.App.value;
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
             appName, function(status, sessionId, response, parm) {
                 switch (status) {
