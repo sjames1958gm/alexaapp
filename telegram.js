@@ -32,7 +32,7 @@ const telegram_handlers = {
             function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
-                        this.emit(':ask', `Opened telegram.`);
+                        this.emit(':ask', `Opened, select a contact.`);
                     break;
                     case 1:
                         this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -59,7 +59,7 @@ const telegram_handlers = {
                     user, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `What is your message, for example say 'send' then your message.`);
+                            this.emit(':ask', `${user} selected, what is your message, for example say 'send' followed by your message.`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -105,13 +105,13 @@ const telegram_handlers = {
         }
         else {
             command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                device, function(status, sessionId, response, parm) {
+                "", device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Ok`);
+                            this.emit(':ask', `Ok, app moved to ${device}`);
                         break;
                         default:
-                            this.emit(':tell', 'Failed to move document');
+                            this.emit(':tell', 'Failed to move app');
                     }
                 
                 }.bind(this));
@@ -136,6 +136,26 @@ const telegram_handlers = {
                     }
                 
                 }.bind(this));
+    },
+    'Close': function () {
+        if (!checkConnection(this)) return;
+        const {request, session} = this.event;
+        const name = request.intent.name;
+        const app = request.intent.slots.App.value;
+        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            appName, function(status, sessionId, response, parm) {
+                switch (status) {
+                    case 0:
+                        this.emit(':ask', `Closed`);
+                    break;
+                    case 1:
+                        this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                    break;
+                    default:
+                        this.emit(':tell', 'Failed to close app');
+                }
+            
+            }.bind(this)); 
     },
     'SessionEndedRequest': function() {
         this.emit(':tell', this.t('STOP_MESSAGE'));

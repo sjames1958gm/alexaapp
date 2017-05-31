@@ -2,7 +2,6 @@
 'use strict';
 
 const Alexa = require('alexa-sdk');
-var { connected } = require('./managerIf');
 
 var {presentations_handlers, presentations_app_id, presentations_strings} = require("./presentations");
 var {nzos_handlers, nzos_app_id, nzos_strings} = require("./nzos");

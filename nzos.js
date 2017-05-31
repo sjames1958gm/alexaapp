@@ -13,7 +13,7 @@ const appName = "nzos";
 const en = {
         translation: {
             SKILL_NAME: 'Doc viewer',
-            HELP_MESSAGE: 'You can say open application or you can say exit ... What can I help you with?',
+            HELP_MESSAGE: 'You can say launch application or you can say exit ... What can I help you with?',
             HELP_REPROMPT: 'What can I help you with?',
             STOP_MESSAGE: 'Goodbye!',
         },
@@ -36,7 +36,7 @@ const nzos_handlers = {
         let device = request.intent.slots.Device.value || "";
         if (!app) {
             var slotToElicit = 'App';
-            var speechOutput = 'Which app would you like to start?';
+            var speechOutput = 'Which app would you like to open?';
             var repromptSpeech = speechOutput;
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
@@ -45,7 +45,7 @@ const nzos_handlers = {
                 app, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Launched ${app}`);
+                            this.emit(':ask', `Ok, ${app} launched`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -79,7 +79,7 @@ const nzos_handlers = {
                 app, device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Moving ${app} to ${device}`);
+                            this.emit(':ask', `Ok, Moved to ${device}`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -106,7 +106,7 @@ const nzos_handlers = {
                 app, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Closed`);
+                            this.emit(':ask', `${app} closed`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -123,20 +123,27 @@ const nzos_handlers = {
         const {request, session} = this.event;
         const name = request.intent.name;
         const user = request.intent.slots.User.value;
-        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                user.toLowerCase(), function(status, sessionId, response, parm) {
-                    switch(status) {
-                        case 0:
-                            this.emit(':ask', `User identity confirmed. Repeat your original request`);
-                        break;
-                        case 1:
-                            this.emit(':ask', `I don't recognize your identity, what is your username?`);
-                        break;
-                        default:
-                            this.emit(':tell', 'Failed to complete request');
-                    }
-                
-                }.bind(this));
+        if (!user) {
+            let slotToElicit = 'User';
+            let speechOutput = "I don't recognize that user";
+            let repromptSpeech = speechOutput;
+            this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
+        } else {
+            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+                    user.toLowerCase(), function(status, sessionId, response, parm) {
+                        switch(status) {
+                            case 0:
+                                this.emit(':ask', `User identity confirmed. Repeat your original request`);
+                            break;
+                            case 1:
+                                this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                            break;
+                            default:
+                                this.emit(':tell', 'Failed to complete request');
+                        }
+                    
+                    }.bind(this));
+        }
     },
     'SessionEndedRequest': function() {
         this.emit(':tell', this.t('STOP_MESSAGE'));

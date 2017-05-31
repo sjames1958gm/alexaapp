@@ -32,7 +32,7 @@ const presentations_handlers = {
             function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
-                        this.emit(':ask', `Opened presentations.`);
+                        this.emit(':ask', `Ok.`);
                     break;
                     case 1:
                         this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -52,7 +52,7 @@ const presentations_handlers = {
             device, function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
-                        this.emit(':ask', `Opened presentations.`);
+                        this.emit(':ask', `Ok.`);
                     break;
                     case 1:
                         this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -114,7 +114,7 @@ const presentations_handlers = {
                 "", device, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `Moving to ${device}`);
+                            this.emit(':ask', `Ok, presentation moved to ${device}`);
                         break;
                         default:
                             this.emit(':tell', 'Failed to move document');
@@ -131,7 +131,7 @@ const presentations_handlers = {
         const direction = request.intent.slots.Direction.value;
         if (!direction) {
             var slotToElicit = 'Direction';
-            var speechOutput = 'Page in which direction?';
+            var speechOutput = 'Next or previous page?';
             var repromptSpeech = speechOutput;
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
@@ -140,7 +140,7 @@ const presentations_handlers = {
                 direction, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
-                            this.emit(':ask', `ok.`);
+                            this.emit(':ask', `Ok.`);
                         break;
                         default:
                             this.emit(':tell', 'Failed to complete request');
