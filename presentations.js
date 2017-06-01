@@ -49,7 +49,7 @@ const presentations_handlers = {
         const name = request.intent.name;
         const device = request.intent.slots.Device.value;
         command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-            device, function(status, sessionId, response, parm) {
+            "", device.toLowerCase(), function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
                         this.emit(':ask', `Ok.`);
@@ -82,7 +82,7 @@ const presentations_handlers = {
                 document = "all";
             }
             command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                document, device, function(status, sessionId, response, parm) {
+                document, device.toLowerCase(), function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Ok`);
@@ -111,7 +111,7 @@ const presentations_handlers = {
         }
         else {
             command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                "", device, function(status, sessionId, response, parm) {
+                "", device.toLowerCase(), function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Ok, presentation moved to ${device}`);
@@ -157,7 +157,7 @@ const presentations_handlers = {
             appName, function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
-                        this.emit(':ask', `Closed`);
+                        this.emit(':tell', `Closed`);
                     break;
                     case 1:
                         this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -186,7 +186,7 @@ const presentations_handlers = {
                 user.toLowerCase(), function(status, sessionId, response, parm) {
                     switch(status) {
                         case 0:
-                            this.emit(':ask', `User identity confirmed. Repeat your original request`);
+                            this.emit(':tell', `User identity confirmed. Repeat your original request`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);

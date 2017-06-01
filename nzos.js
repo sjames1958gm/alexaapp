@@ -42,7 +42,7 @@ const nzos_handlers = {
         }
         else {
             command(session.user.userId, app, session.sessionId, name.toLowerCase(), 
-                app, device, function(status, sessionId, response, parm) {
+                app, device.toLowerCase(), function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Ok, ${app} launched`);
@@ -76,7 +76,7 @@ const nzos_handlers = {
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         } else {
             command(session.user.userId, app, session.sessionId, name.toLowerCase(), 
-                app, device, function(status, sessionId, response, parm) {
+                app, device.toLowerCase(), function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Ok, Moved to ${device}`);
@@ -133,7 +133,7 @@ const nzos_handlers = {
                     user.toLowerCase(), function(status, sessionId, response, parm) {
                         switch(status) {
                             case 0:
-                                this.emit(':ask', `User identity confirmed. Repeat your original request`);
+                                this.emit(':tell', `User identity confirmed. Repeat your original request`);
                             break;
                             case 1:
                                 this.emit(':ask', `I don't recognize your identity, what is your username?`);
