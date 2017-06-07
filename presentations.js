@@ -186,7 +186,7 @@ const presentations_handlers = {
                 user.toLowerCase(), function(status, sessionId, response, parm) {
                     switch(status) {
                         case 0:
-                            this.emit(':tell', `User identity confirmed. Repeat your original request`);
+                            this.emit(':ask', `User identity confirmed. Repeat your original request`);
                         break;
                         case 1:
                             this.emit(':ask', `I don't recognize your identity, what is your username?`);
@@ -197,6 +197,24 @@ const presentations_handlers = {
                 
                 }.bind(this));
         }
+    },
+    'Unhandled': function() {
+        if (!checkConnection(this)) return;
+        const {request, session} = this.event;
+        command(session.user.userId, appName, session.sessionId, "passthru", 
+            JSON.stringify(request), function(status, sessionId, response, parm) {
+            switch(status) {
+                case 0:
+                    this.emit(":" + response, parm);
+                break;
+                case 1:
+                    this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                break;
+                default:
+                    this.emit(':tell', 'Failed to complete request');
+            }
+        
+        }.bind(this));
     },
     'SessionEndedRequest': function() {
         this.emit(':tell', this.t('STOP_MESSAGE'));

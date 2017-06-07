@@ -102,11 +102,20 @@
         });
   
         let size = 0;
+        let save;
         socket.on("data", function (buffer) {
           try {
             // console.log("ondata");
             if (size == 0) {
               size = readUInt32(buffer, 0);
+              // console.log(`On Data, size: ${size}`);
+              buffer = buffer.slice(4);
+              if (buffer.length > 0) {
+                // console.log("Full buffer");
+                processRpc(socket, size, buffer);
+                size = 0;
+                save = undefined;
+              }
             }
             else {
               processRpc(socket, size, buffer);
