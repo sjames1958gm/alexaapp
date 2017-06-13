@@ -279,6 +279,7 @@ message AppCommandReq
     required string Parm2 = 7;
     required string Parm3 = 8;
     required string Parm4 = 9;
+    required string Parm5 = 10;
 }
 
 message AppCommandResp

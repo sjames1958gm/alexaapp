@@ -102,19 +102,17 @@
         });
   
         let size = 0;
-        let save;
         socket.on("data", function (buffer) {
           try {
-            // console.log("ondata");
+            console.log("ondata");
             if (size == 0) {
               size = readUInt32(buffer, 0);
-              // console.log(`On Data, size: ${size}`);
+              console.log(`On Data, size: ${size}`);
               buffer = buffer.slice(4);
               if (buffer.length > 0) {
-                // console.log("Full buffer");
+                console.log("Full buffer");
                 processRpc(socket, size, buffer);
                 size = 0;
-                save = undefined;
               }
             }
             else {
@@ -133,8 +131,8 @@
     function processRpc(socket, len, buffer) {
       var msgId = readUInt32(buffer, 0);
       // TODO: verify length vs len?
-      // console.log(" len: ", len);
-      // console.log(" msgId: ", msgId);
+      console.log(" len: ", len);
+      console.log(" msgId: ", msgId);
 
       var name = MsgIds[msgId];
       if (!name) {

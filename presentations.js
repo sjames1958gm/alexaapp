@@ -28,7 +28,7 @@ const presentations_handlers = {
     'LaunchRequest': function() {
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
-        command(session.user.userId, appName, session.sessionId, 'Launch'.toLowerCase(), 
+        command(session.user.userId, "", appName, session.sessionId, 'Launch'.toLowerCase(), 
             function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
@@ -48,8 +48,8 @@ const presentations_handlers = {
         const {request, session} = this.event;
         const name = request.intent.name;
         const device = request.intent.slots.Device.value;
-        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-            "", device.toLowerCase(), function(status, sessionId, response, parm) {
+        command(session.user.userId, device.toLowerCase(), appName, session.sessionId, name.toLowerCase(), 
+            "", function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
                         this.emit(':ask', `Ok.`);
@@ -64,6 +64,7 @@ const presentations_handlers = {
             }.bind(this));        
     },
     'Show': function () {
+        console.log("Show");
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
@@ -81,8 +82,9 @@ const presentations_handlers = {
                 // Assume home is set - and set document to all.
                 document = "all";
             }
-            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                document, device.toLowerCase(), function(status, sessionId, response, parm) {
+            command(session.user.userId, device.toLowerCase(), appName, session.sessionId, name.toLowerCase(), 
+                document, function(status, sessionId, response, parm) {
+                    console.log(`status ${status}`);
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Ok`);
@@ -110,8 +112,9 @@ const presentations_handlers = {
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
         else {
-            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
-                "", device.toLowerCase(), function(status, sessionId, response, parm) {
+            command(session.user.userId, device.toLowerCase(), appName, 
+                session.sessionId, name.toLowerCase(), 
+                function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Ok, presentation moved to ${device}`);
@@ -136,7 +139,7 @@ const presentations_handlers = {
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
         else {
-            command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+            command(session.user.userId, "", appName, session.sessionId, name.toLowerCase(), 
                 direction, function(status, sessionId, response, parm) {
                     switch (status) {
                         case 0:
@@ -153,7 +156,7 @@ const presentations_handlers = {
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
-        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+        command(session.user.userId, "", appName, session.sessionId, name.toLowerCase(), 
             appName, function(status, sessionId, response, parm) {
                 switch (status) {
                     case 0:
@@ -182,7 +185,7 @@ const presentations_handlers = {
             this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
         }
         else {
-        command(session.user.userId, appName, session.sessionId, name.toLowerCase(), 
+        command(session.user.userId, "", appName, session.sessionId, name.toLowerCase(), 
                 user.toLowerCase(), function(status, sessionId, response, parm) {
                     switch(status) {
                         case 0:
@@ -200,21 +203,33 @@ const presentations_handlers = {
     },
     'Unhandled': function() {
         if (!checkConnection(this)) return;
+        console.log("Unhandled");
         const {request, session} = this.event;
-        command(session.user.userId, appName, session.sessionId, "passthru", 
-            JSON.stringify(request), function(status, sessionId, response, parm) {
-            switch(status) {
-                case 0:
-                    this.emit(":" + response, parm);
-                break;
-                case 1:
-                    this.emit(':ask', `I don't recognize your identity, what is your username?`);
-                break;
-                default:
-                    this.emit(':tell', 'Failed to complete request');
-            }
+        const name = request.intent.name;
         
-        }.bind(this));
+        // Fill in slots
+        const slots = request.intent.slots;
+        let params = [];
+        let keys = Object.keys(slots);
+        keys.forEach((key) => params.push(slots[key].value));
+        
+        command(session.user.userId, "", appName, session.sessionId, name.toLowerCase(), 
+            params[0] || "", params[1] || "", params[2] || "", 
+            params[3] || "", params[4] || "", function(status, sessionId, response, parm) {
+                response === "" ? response : "tell";
+                parm === "" ? parm : "Ok";
+                switch(status) {
+                    case 0:
+                        this.emit(":" + response, parm);
+                    break;
+                    case 1:
+                        this.emit(':ask', `I don't recognize your identity, what is your username?`);
+                    break;
+                    default:
+                        this.emit(':tell', 'Failed to complete request');
+                }
+        
+            }.bind(this));
     },
     'SessionEndedRequest': function() {
         this.emit(':tell', this.t('STOP_MESSAGE'));
