@@ -64,7 +64,6 @@ const presentations_handlers = {
             }.bind(this));        
     },
     'Show': function () {
-        console.log("Show");
         if (!checkConnection(this)) return;
         const {request, session} = this.event;
         const name = request.intent.name;
@@ -84,7 +83,6 @@ const presentations_handlers = {
             }
             command(session.user.userId, device.toLowerCase(), appName, session.sessionId, name.toLowerCase(), 
                 document, function(status, sessionId, response, parm) {
-                    console.log(`status ${status}`);
                     switch (status) {
                         case 0:
                             this.emit(':ask', `Ok`);
