@@ -156,36 +156,6 @@ const telegram_handlers = {
             
             }.bind(this)); 
     },
-    'Unhandled': function() {
-        if (!checkConnection(this)) return;
-        console.log("Unhandled");
-        const {request, session} = this.event;
-        const name = request.intent.name;
-        
-        // Fill in slots
-        const slots = request.intent.slots;
-        let params = [];
-        let keys = Object.keys(slots);
-        keys.forEach((key) => params.push(slots[key].value));
-        
-        command(session.user.userId, "", appName, session.sessionId, name.toLowerCase(), 
-            params[0] || "", params[1] || "", params[2] || "", 
-            params[3] || "", params[4] || "", function(status, sessionId, response, parm) {
-                response === "" ? response : "tell";
-                parm === "" ? parm : "Ok";
-                switch(status) {
-                    case 0:
-                        this.emit(":" + response, parm);
-                    break;
-                    case 1:
-                        this.emit(':ask', `I don't recognize your identity, what is your username?`);
-                    break;
-                    default:
-                        this.emit(':tell', 'Failed to complete request');
-                }
-        
-            }.bind(this));
-    },
     'SessionEndedRequest': function() {
         this.emit(':tell', this.t('STOP_MESSAGE'));
     },
