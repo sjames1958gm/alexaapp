@@ -110,12 +110,13 @@
               console.log(`On Data, size: ${size}`);
               buffer = buffer.slice(4);
               if (buffer.length > 0) {
-                console.log("Full buffer");
+                console.log("Full buffer " + buffer.length);
                 processRpc(socket, size, buffer);
                 size = 0;
               }
             }
             else {
+              console.log("MsgId + buffer " + buffer.length);
               processRpc(socket, size, buffer);
               size = 0;
             }
