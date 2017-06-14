@@ -294,3 +294,8 @@ message AppCommandResp
     required string Response = 3;
     required string Parm = 4;
 }
+
+message AppCommandReg
+{
+    required string AppName = 1;
+}
