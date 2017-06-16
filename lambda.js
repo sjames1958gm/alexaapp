@@ -3,9 +3,7 @@
 
 const Alexa = require('alexa-sdk');
 
-var {presentations_handlers, presentations_app_id, presentations_strings} = require("./presentations");
 var {nzos_handlers, nzos_app_id, nzos_strings} = require("./nzos");
-var {telegram_handlers, telegram_app_id, telegram_strings} = require("./telegram");
 
 var latencyAppId = "amzn1.ask.skill.43994ac0-16d2-4804-8dd1-2beba59fba43";
 var videoAppId = "amzn1.ask.skill.c8e79877-8278-4628-8076-4b7ed6b8bfef";
