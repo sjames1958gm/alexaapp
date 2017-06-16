@@ -271,6 +271,9 @@ const nzos_handlers = {
     }
   },
   
+  'SessionEndedRequest': function() {
+      this.emit(':tell', this.t('STOP_MESSAGE'));
+  },
   'AMAZON.HelpIntent': function() {
     const speechOutput = this.t('HELP_MESSAGE');
     const reprompt = this.t('HELP_MESSAGE');
