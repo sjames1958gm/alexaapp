@@ -45,7 +45,7 @@ const nzos_handlers = {
       // this.emit(':ask', `Welcome to ${this.context.appPrompt || this.context.appName}, open on which device?`);
     }
     else {
-      this.emit(':ask', 'Welcome to cloud OS, which APP would you like to launch, for example say "launch browser"?');
+      // this.emit(':ask', 'Welcome to cloud OS, which APP would you like to launch, for example say "launch browser"?');
     }
   },
 
@@ -242,16 +242,21 @@ const nzos_handlers = {
       let params = [];
       const slots = request.intent.slots;
       if (slots) {
-        let keys = Object.keys(slots);
+        let keys = Object.keys(slots).sort((a,b) => (a < b) ? -1 : 1);
+        console.log(keys);
         keys.forEach((key) => {
-          if (key === "Device" && slots[key].value) {
-            device = slots[key].value;
+          if (key === "Device") {
+            if (slots[key].value) {
+              device = slots[key].value;
+            }
           }
           else if (key !== "App") {
             params.push(slots[key].value);
           }
         });
       }
+      
+      console.log(params);
 
       command(session.user.userId, device.toLowerCase(), app, session.sessionId, name.toLowerCase(),
         params[0] || "", params[1] || "", params[2] || "",
