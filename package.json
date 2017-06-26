@@ -12,6 +12,7 @@
   "dependencies": {
     "alexa-sdk": "^1.0.9",
     "aws-lambda-mock-context": "^3.1.0",
+    "aws-sdk": "^2.77.0",
     "body-parser": "^1.17.2",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
