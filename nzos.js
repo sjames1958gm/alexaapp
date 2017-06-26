@@ -56,6 +56,7 @@ const nzos_handlers = {
       request,
       session
     } = this.event;
+    console.log(`User: ${JSON.stringify(session.user)}`);
     // Hardcode this here as LaunchRequest doesn't have
     const name = 'Launch';
     const app = this.context.appName || request.intent.slots.App.value;
@@ -79,7 +80,7 @@ const nzos_handlers = {
         function(status, sessionId, response, parm) {
           switch (status) {
             case 0:
-              emitResponse(this, response, "ask", parm, `Ok, ${app} launched`);
+              emitResponse(this, response, "ask", parm, `Ok, ${this.context.appPrompt || app} launched`);
               break;
             case 1:
               emitResponse(this, response, "ask", parm, `I don't recognize your identity, what is your username?`);
@@ -165,7 +166,7 @@ const nzos_handlers = {
         function(status, sessionId, response, parm) {
           switch (status) {
             case 0:
-              emitResponse(this, response, "tell", parm, `${app} closed`);
+              emitResponse(this, response, "tell", parm, `${this.context.appPrompt || app} closed`);
               break;
             case 1:
               emitResponse(this, response, "ask", parm, `I don't recognize your identity, what is your username?`);
