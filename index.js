@@ -10,10 +10,6 @@ require('dotenv').config();
 
 var PORT = process.env.PORT || 8080;
 
-var { startClient } = require('./managerIf');
-
-startClient();
-
 // lambda.js contains the lambda function for Alexa as in https://github.com/alexa/alexa-skills-kit-sdk-for-nodejs
 var   lambda = require('./lambda');
 

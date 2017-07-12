@@ -1,41 +1,37 @@
 var net = require('net');
 var nzappapi =  require('./nzappapi.js');
 
+var initialized = false;
 var transactions = [];
-var connected = false;
-module.exports.startClient = function() {
+module.exports.startClient = function(addr, port, cb) {
+
+  if (!initialized) {
+    nzappapi.Initialize(
+      "./nzappapi.proto", 
+      {
+        AppCommandResp: AppCommandResp
+      });
+      
+    initialized = true;  
+  }
   
-  console.log(`starting client to ${process.env.MGR_IP}:${process.env.MGR_PORT}`);
-  nzappapi.Initialize(
-    "./nzappapi.proto", 
-    {type: "tcp", constructor: net.Socket, host: process.env.MGR_IP, port: process.env.MGR_PORT},
+  nzappapi.connect({type: "tcp", constructor: net.Socket, host: addr, port: port},
     {
-      AppCommandResp: AppCommandResp
-    },
-    {
-      onOpen: () => (connected = true),
-      onClose: () => (connected = false),
-      onError: () => (connected = false)
-    });
-
+      onOpen: (handle) => { if (cb) cb(null, handle);},
+      onClose: () => { if (cb) cb("Manager is unavailable"); },
+      onError: () => { if (cb) cb("Manager is unavailable"); }
+    }
+  );
+  
 };
 
-module.exports.checkConnection = function(emitter) {
-  console.log(`Connected: ${connected}`);
-  if (!connected) {
-    emitter.emit(":tell", "No connection to application manager");
-    return false;
-  }  
-  return true;
-};
-
-module.exports.command = function(user, device, app, sessionId, intent, ...rest) {
+module.exports.command = function(handle, user, device, app, sessionId, intent, ...rest) {
   let cb;
   if (rest.length > 0 && typeof rest[rest.length - 1] === "function") {
     cb = rest.pop();
   }
 
-  nzappapi.AppCommandReq(user, device, app, sessionId, intent, 
+  nzappapi.AppCommandReq(handle, user, device, app, sessionId, intent, 
     rest[0] || "", rest[1] || "", rest[2] || "", rest[3] || "");
     
   if (cb) {

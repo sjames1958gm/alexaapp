@@ -6,8 +6,7 @@
 'use strict';
 
 const {
-  command,
-  checkConnection
+  command
 } = require('./managerIf');
 
 const nzos_app_id = "amzn1.ask.skill.d59e4dcf-92b7-4c4f-9ecc-ec93623a4d17";
@@ -28,12 +27,16 @@ const nzos_strings = {
 };
 
 function emitResponse(alexa, response, defaultResponse, parm, defaultParm) {
-  response = ":" + (response !== "" ? response : defaultResponse)
+  response = ":" + (response !== "" ? response : defaultResponse);
   parm = parm !== "" ? parm : defaultParm;
 
   console.log(`emitReponse ${response}, ${parm}`);
 
   alexa.emit(response, parm);
+}
+
+function getUserId(session) {
+  return session.user.accessToken ? session.user.accessToken : session.user.userId;
 }
 
 const nzos_handlers = {
@@ -51,7 +54,6 @@ const nzos_handlers = {
 
   'Launch': function() {
     console.log(this.context.appName);
-    if (!checkConnection(this)) return;
     const {
       request,
       session
@@ -75,7 +77,7 @@ const nzos_handlers = {
       this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
     }
     else {
-      command(session.user.userId, device.toLowerCase(), app, session.sessionId, name.toLowerCase(),
+      command(this.context.handle, getUserId(session), device.toLowerCase(), app, session.sessionId, name.toLowerCase(),
         app,
         function(status, sessionId, response, parm) {
           switch (status) {
@@ -106,7 +108,6 @@ const nzos_handlers = {
 
   'Move': function() {
     console.log(this.context.appName);
-    if (!checkConnection(this)) return;
     const {
       request,
       session
@@ -127,7 +128,7 @@ const nzos_handlers = {
       this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
     }
     else {
-      command(session.user.userId, device.toLowerCase(), app, session.sessionId, name.toLowerCase(),
+      command(this.context.handle, getUserId(session), device.toLowerCase(), app, session.sessionId, name.toLowerCase(),
         app,
         function(status, sessionId, response, parm) {
           switch (status) {
@@ -147,7 +148,6 @@ const nzos_handlers = {
 
   'Close': function() {
     console.log(this.context.appName);
-    if (!checkConnection(this)) return;
     const {
       request,
       session
@@ -161,7 +161,7 @@ const nzos_handlers = {
       this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
     }
     else {
-      command(session.user.userId, "", app, session.sessionId, name.toLowerCase(),
+      command(this.context.handle, getUserId(session), "", app, session.sessionId, name.toLowerCase(),
         app,
         function(status, sessionId, response, parm) {
           switch (status) {
@@ -181,7 +181,6 @@ const nzos_handlers = {
 
   'Identify': function() {
     console.log(this.context.appName);
-    if (!checkConnection(this)) return;
     const {
       request,
       session
@@ -195,7 +194,7 @@ const nzos_handlers = {
       this.emit(':elicitSlot', slotToElicit, speechOutput, repromptSpeech);
     }
     else {
-      command(session.user.userId, "", appName, session.sessionId, name.toLowerCase(),
+      command(this.context.handle, getUserId(session), "", appName, session.sessionId, name.toLowerCase(),
         user.toLowerCase(),
         function(status, sessionId, response, parm) {
           switch (status) {
@@ -215,7 +214,6 @@ const nzos_handlers = {
   
   'Unhandled': function() {
     console.log(this.context.appName);
-    if (!checkConnection(this)) return;
     const {
       request,
       session
@@ -259,7 +257,7 @@ const nzos_handlers = {
       
       console.log(params);
 
-      command(session.user.userId, device.toLowerCase(), app, session.sessionId, name.toLowerCase(),
+      command(this.context.handle, getUserId(session), device.toLowerCase(), app, session.sessionId, name.toLowerCase(),
         params[0] || "", params[1] || "", params[2] || "",
         params[3] || "", params[4] || "",
         function(status, sessionId, response, parm) {
